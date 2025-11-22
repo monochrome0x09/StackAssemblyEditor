@@ -127,11 +127,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Editor.c" />
     <ClCompile Include="Menu.c" />
     <ClCompile Include="Screen.c" />
     <ClCompile Include="StackAssemblyEditor.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Editor.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="Screen.h" />
   </ItemGroup>

@@ -2,11 +2,7 @@
 #include <stdio.h>
 #include <windows.h>
 #include "Screen.h"
-
-struct File {
-    char name[20];
-    char code[100][1000];
-};
+#include "Editor.h"
 
 
 void createfile_setup(struct File files[]);

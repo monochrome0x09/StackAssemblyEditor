@@ -10,13 +10,13 @@
 #define CYAN (FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_INTENSITY)
 
 int menu_setup() {
+    system("cls");
+
     char* items[MENU_COUNT] = { "1. Create File", "2. Delete File", "3. Select Files", "4. Exit"};
 
     int selected = -1;
 
     while (1) {
-        system("cls");
-
         struct Screen screen = get_screen();
 
         set_text_color(CYAN);
@@ -44,22 +44,14 @@ int menu_setup() {
         else if (ch == 13) { // Enter
             break;
         }
+        else if (ch == 9) {
+            system("cls");
+        }
     }
 
     set_text_color(WHITE);
 
     return selected;
-}
-
-
-void editor_setup() {
-    struct Screen screen = get_screen();
-    int x = screen.columns / 1.5; // 콘솔의 오른쪽에 vertical line
-    draw_vertical_line(x, 0, screen.rows - 1, '|'); 
-
-    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-    COORD pos = { 0, 0 };
-    SetConsoleCursorPosition(hConsole, pos);
 }
 
 int main() {
@@ -80,7 +72,7 @@ int main() {
             break;
 
         case 1:
-            //deletefile_setup(files);
+            deletefile_setup(files);
             break;
 
         case 2:

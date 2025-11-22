@@ -1,7 +1,7 @@
-﻿  Menu.c
-C:\Users\user\Documents\Workspace\Developments\StackAssemblyEditor\Menu.c(19,42): warning C4267: '함수': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\user\Documents\Workspace\Developments\StackAssemblyEditor\Menu.c(45,42): warning C4267: '함수': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\user\Documents\Workspace\Developments\StackAssemblyEditor\Menu.c(57,42): warning C4267: '함수': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\user\Documents\Workspace\Developments\StackAssemblyEditor\Menu.c(72,44): warning C4267: '함수': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\user\Documents\Workspace\Developments\StackAssemblyEditor\Menu.c(80,12): warning C4013: '_getch'이(가) 정의되지 않았습니다. extern은 int형을 반환하는 것으로 간주합니다.
+﻿  Editor.c
+C:\Users\user\Documents\Workspace\Developments\StackAssemblyEditor\Editor.c(76,23): warning C4267: '=': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\user\Documents\Workspace\Developments\StackAssemblyEditor\Editor.c(91,53): warning C4267: '=': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\user\Documents\Workspace\Developments\StackAssemblyEditor\Editor.c(95,53): warning C4267: '=': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\user\Documents\Workspace\Developments\StackAssemblyEditor\Editor.c(68,27): warning C4267: '초기화 중': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\user\Documents\Workspace\Developments\StackAssemblyEditor\Editor.c(99,23): warning C4267: '초기화 중': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
   StackAssemblyEditor.vcxproj -> C:\Users\user\Documents\Workspace\Developments\StackAssemblyEditor\x64\Debug\StackAssemblyEditor.exe

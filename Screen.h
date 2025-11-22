@@ -1,8 +1,15 @@
 #pragma once
+#include <windows.h>
+#include <stdio.h>
 
 struct Screen {
     int columns;
     int rows;
+};
+
+struct File {
+    char name[20];
+    char code[50][100];
 };
 
 struct Screen get_screen();

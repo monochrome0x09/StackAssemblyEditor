@@ -10,10 +10,17 @@
 #define BR 217
 #define H 196
 #define V 179
-
 #define LEFT_T 195
+#define RIGHT_T 180
+#define BOTTOM_T 194
 
 #define BOX 220 
+
+#define PUSH 0
+#define POP 1
+#define ADD 2
+#define SUB 3
+#define MOV 4
 
 
 // fill은 채움의 정도
@@ -78,17 +85,80 @@ void print_stack_log(int divide_x, struct Stack *s) {
     }
 }
 
+void print_register(int divide_x, struct Register* r) {
+    struct Screen screen = get_screen();
+
+    draw_horizontal_line(screen.rows - 3, 0, divide_x - 1, H);
+
+    for (int i = 1; i <= 3; i++) {
+        set_console_position((int)(divide_x / 4) * i, screen.rows - 3);
+        putchar(BOTTOM_T);
+
+
+        draw_vertical_line((int)(divide_x / 4) * i, screen.rows - 2, screen.rows - 1, V);
+    }
+
+    set_console_position(1, screen.rows - 2);
+    printf("AX: %d", r->ax);
+
+    set_console_position((int)(divide_x / 4) + 2, screen.rows - 2);
+    printf("BX: %d", r->bx);
+
+    set_console_position((int)(divide_x / 4) * 2 + 2, screen.rows - 2);
+    printf("CX: %d", r->cx);
+
+    set_console_position((int)(divide_x / 4) * 3 + 2, screen.rows - 2);
+    printf("DX: %d", r->dx);
+}
+
+
+void divide_code(char* token, int code_i) {
+    //int 
+
+    //if (code_i >= 0) {
+    //    if (strstr(token, "push")) {
+
+    //    }
+    //}
+}
+
+
+void execute(struct File* file, struct Stack* s) {
+    //char* token;
+
+    //int i = 0;
+    //while (file->code[i] != '\0') {
+    //    int code_i = 0;
+    //    token = strtok(file->code[i], " ");
+
+    //    while (token != NULL) {
+    //        
+
+    //        token = strtok(NULL, " ");  // 다음 토큰
+    //        code_i++;
+    //    }
+
+    //    i++;
+    //}
+}
+
 
 void editor_setup(struct File* file) {
     system("cls");
 
     char code[50][100] = { 0 };  // file->code와 크기 일치 (100바이트)
     struct Stack s;
+    struct Register reg;
 
     init_stack(&s);
     push(&s, 3284);
     push(&s, 1021);
     push(&s, 23494);
+
+    reg.ax = 1;
+    reg.bx = 2;
+    reg.cx = 3;
+    reg.dx = 4;
 
     // 모든 줄을 복사 (빈 줄 포함)
     for (int i = 0; i < 50; i++) {
@@ -126,6 +196,9 @@ void editor_setup(struct File* file) {
         set_console_position(divider_x, (int)(screen.rows / 2));
         putchar(LEFT_T);
 
+        set_console_position(divider_x, screen.rows - 3);
+        putchar(RIGHT_T);
+
         // 코드 영역 표시
         set_console_position(2, 3);
         printf("Code Editor (ESC to exit)");
@@ -134,8 +207,10 @@ void editor_setup(struct File* file) {
         print_stack_log(divider_x, &s);
 
         // 상태 표시
-        set_console_position(2, screen.rows - 2);
-        printf("Line: %d | Pos: %d", line + 1, pos);
+        //set_console_position(2, screen.rows - 2);
+        //printf("Line: %d | Pos: %d", line + 1, pos);
+        
+        print_register(divider_x, &reg);
 
         // 모든 코드 라인 출력
         for (int i = 0; i <= line && i < 50; i++) {
@@ -157,10 +232,10 @@ void editor_setup(struct File* file) {
 
 
         else if (ch == ':') {
-            set_console_position(2, screen.rows - 4);
+            set_console_position(0, screen.rows - 5);
             printf(":");
 
-            set_console_position(3, screen.rows - 4);
+            set_console_position(1, screen.rows - 5);
             scanf_s("%s", cmd, 20);
 
             if (strchr(cmd, 'w')) {
@@ -170,7 +245,7 @@ void editor_setup(struct File* file) {
             }
             
             if (strchr(cmd, 'x')) {
-
+                execute(file, &s);
             }
         }
 

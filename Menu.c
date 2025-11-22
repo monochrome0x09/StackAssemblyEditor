@@ -7,6 +7,8 @@
 #define WHITE (FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE)
 #define CYAN (FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_INTENSITY)
 
+#define H 196
+
 void createfile_setup(struct File files[])
 {
     system("cls");
@@ -17,8 +19,10 @@ void createfile_setup(struct File files[])
     set_console_position(screen.columns / 2 - (strlen(txt)) / 2, screen.rows / 2 - 2);
     printf("%s", txt);
 
-    set_console_position(screen.columns / 2 - 10, screen.rows / 2 + 2);
-    printf("----------------------");
+    //set_console_position(screen.columns / 2 - 10, screen.rows / 2 + 2);
+    //printf("----------------------");
+
+    draw_horizontal_line(screen.rows / 2 + 2, screen.columns / 2 - 10, screen.columns / 2 + 10, H);
 
     set_console_position(screen.columns / 2 - 10, screen.rows / 2 + 1);
 

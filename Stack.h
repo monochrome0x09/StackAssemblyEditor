@@ -6,6 +6,13 @@ struct Stack {
 	int top;
 };
 
+struct Register {
+	int ax;
+	int bx;
+	int cx;
+	int dx;
+};
+
 void init_stack(struct Stack* s);
 
 int is_empty(struct Stack* s);

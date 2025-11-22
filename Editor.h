@@ -11,4 +11,8 @@ void print_stack(int divide_x, int fill);
 
 void print_stack_log(int divide_x, struct Stack* s);
 
+void print_register(int divide_x, struct Register* r);
+
+void execute(struct File* file, struct Stack* s);
+
 void editor_setup(struct File* file);

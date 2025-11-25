@@ -51,9 +51,9 @@ void createfile_setup(struct File files[])
 void deletefile_setup(struct File files[]) {
     int selected = 0;
 
-    while (1) {
-        system("cls");  // 루프마다 화면 새로고침
+    system("cls");  // 루프마다 화면 새로고침
 
+    while (1) {
         int max_size = 0;
         int file_indices[10];  // 실제 인덱스 매핑
         struct Screen screen = get_screen();
@@ -111,15 +111,18 @@ void deletefile_setup(struct File files[]) {
         else if (ch == 27) {  // ESC
             break;
         }
+        else if (ch == 9) {
+            system("cls");
+        }
     }
 }
 
 void selectfile_setup(struct File files[]) {
     int selected = 0;
 
-    while (1) {
-        system("cls");  // 루프마다 화면 새로고침
+    system("cls");  // 루프마다 화면 새로고침
 
+    while (1) {
         int max_size = 0;
         int file_indices[10];  // 실제 인덱스 매핑
         struct Screen screen = get_screen();
@@ -171,6 +174,9 @@ void selectfile_setup(struct File files[]) {
         }
         else if (ch == 27) {  // ESC
             break;
+        }
+        else if (ch == 9) {
+            system("cls");
         }
     }
 }

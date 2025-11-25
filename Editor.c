@@ -3,6 +3,7 @@
 #define YELLOW (FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY)
 #define WHITE (FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE)
 #define CYAN (FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_INTENSITY)
+#define RED (FOREGROUND_RED | FOREGROUND_INTENSITY)
 
 #define TL 218
 #define TR 191
@@ -111,35 +112,230 @@ void print_register(int divide_x, struct Register* r) {
     printf("DX: %d", r->dx);
 }
 
+void print_error(char* msg) {
+    struct Screen screen = get_screen();
 
-void divide_code(char* token, int code_i) {
-    //int 
+    set_console_position(0, screen.rows - 6);
+    set_text_color(RED);
 
-    //if (code_i >= 0) {
-    //    if (strstr(token, "push")) {
+    if (msg != NULL) printf("%s", msg);
 
-    //    }
-    //}
+    set_text_color(WHITE);
+}
+
+void divide_code(char* asm[3], struct File* file, struct Stack* s, struct Register* reg, char* err) {
+    size_t err_size = 100;
+
+    // NULL 체크
+    if (asm[0] == NULL) {
+        strcpy_s(err, err_size, "Empty command");
+        return;
+    }
+
+    int opcode = -1;
+
+    if (strcmp(asm[0], "push") == 0) opcode = PUSH;
+    else if (strcmp(asm[0], "pop") == 0) opcode = POP;
+    else if (strcmp(asm[0], "add") == 0) opcode = ADD;
+    else if (strcmp(asm[0], "sub") == 0) opcode = SUB;
+    else if (strcmp(asm[0], "mov") == 0) opcode = MOV;
+    else {
+        strcpy_s(err, err_size, "There is no opcode that you typed");
+        return;  // 오류 발생 시 즉시 종료
+    }
+
+    switch (opcode) {
+    case PUSH:
+        if (asm[1] == NULL) {
+            strcpy_s(err, err_size, "PUSH requires an argument");
+            return;
+        }
+        push(s, atoi(asm[1]));
+        break;
+
+    case POP:
+        if (asm[1] == NULL) {
+            strcpy_s(err, err_size, "POP requires a register");
+            return;
+        }
+
+        if (strcmp(asm[1], "ax") == 0) pop(s, &(reg->ax));
+        else if (strcmp(asm[1], "bx") == 0) pop(s, &(reg->bx));
+        else if (strcmp(asm[1], "cx") == 0) pop(s, &(reg->cx));
+        else if (strcmp(asm[1], "dx") == 0) pop(s, &(reg->dx));
+        else {
+            strcpy_s(err, err_size, "Invalid register for POP");
+            return;
+        }
+        break;
+
+    case ADD:
+        if (asm[1] == NULL || asm[2] == NULL) {
+            strcpy_s(err, err_size, "ADD requires two arguments");
+            return;
+        }
+
+        int sec_oprand = 0;
+        
+        // 두 번째 오퍼랜드 레지스터 확인
+        if (strcmp(asm[2], "ax") != NULL) sec_oprand = reg->ax;
+        else if (strcmp(asm[2], "bx") != NULL) sec_oprand = reg->bx;
+        else if (strcmp(asm[2], "cx") != NULL) sec_oprand = reg->cx;
+        else if (strcmp(asm[2], "dx") != NULL) sec_oprand = reg->dx;
+        else {
+            sec_oprand = atoi(asm[2]);
+        }
+
+
+        if (strcmp(asm[1], "ax") == 0) reg->ax += sec_oprand;
+        else if (strcmp(asm[1], "bx") == 0) reg->bx += sec_oprand;
+        else if (strcmp(asm[1], "cx") == 0) reg->cx += sec_oprand;
+        else if (strcmp(asm[1], "dx") == 0) reg->dx += sec_oprand;
+        else {
+            strcpy_s(err, err_size, "Invalid register for ADD");
+            return;
+        }
+        break;
+
+    case SUB:
+        if (asm[1] == NULL || asm[2] == NULL) {
+            strcpy_s(err, err_size, "SUB requires two arguments");
+            return;
+        }
+
+        if (strcmp(asm[1], "ax") == 0) reg->ax -= atoi(asm[2]);
+        else if (strcmp(asm[1], "bx") == 0) reg->bx -= atoi(asm[2]);
+        else if (strcmp(asm[1], "cx") == 0) reg->cx -= atoi(asm[2]);
+        else if (strcmp(asm[1], "dx") == 0) reg->dx -= atoi(asm[2]);
+        else {
+            strcpy_s(err, err_size, "Invalid register for SUB");
+            return;
+        }
+        break;
+
+    case MOV:
+        if (asm[1] == NULL || asm[2] == NULL) {
+            strcpy_s(err, err_size, "MOV requires two arguments");
+            return;
+        }
+
+        int value = atoi(asm[2]);
+
+        if (strcmp(asm[1], "ax") == 0) reg->ax = value;
+        else if (strcmp(asm[1], "bx") == 0) reg->bx = value;
+        else if (strcmp(asm[1], "cx") == 0) reg->cx = value;
+        else if (strcmp(asm[1], "dx") == 0) reg->dx = value;
+        else {
+            strcpy_s(err, err_size, "Invalid register for MOV");
+            return;
+        }
+        break;
+    }
+
+    // 성공 시 에러 메시지 초기화
+    err[0] = '\0';
 }
 
 
-void execute(struct File* file, struct Stack* s) {
-    //char* token;
+void execute(struct File* file, struct Stack* s, struct Register* reg, char* err) {
+    int i = 0;
 
-    //int i = 0;
-    //while (file->code[i] != '\0') {
-    //    int code_i = 0;
-    //    token = strtok(file->code[i], " ");
+    init_stack(s);
 
-    //    while (token != NULL) {
-    //        
+    reg->ax = 0;
+    reg->bx = 0;
+    reg->cx = 0;
+    reg->dx = 0;
 
-    //        token = strtok(NULL, " ");  // 다음 토큰
-    //        code_i++;
-    //    }
+    // 마지막으로 내용이 있는 줄 찾기
+    int line = 0;
+    for (int j = 49; j >= 0; j--) {
+        if (file->code[j][0] != '\0') {
+            line = j + 1;
+            break;
+        }
+    }
 
-    //    i++;
-    //}
+    while (i <= line) {
+        system("cls");
+
+        char temp[100];
+        strcpy_s(temp, sizeof(temp), file->code[i]);
+
+        char* asm_parts[3] = { NULL, NULL, NULL };  // 명시적으로 NULL 초기화
+        int code_i = 0;
+
+        char* token;
+        char* next_token = NULL;
+
+
+        struct Screen screen = get_screen();
+
+        // 파일 이름 표시
+        set_console_position(2, 1);
+        set_text_color(CYAN);
+        printf("File: %s.asm", file->name);
+        set_text_color(WHITE);
+
+        // 세로선 그리기
+        int divider_x = (int)(screen.columns / 1.5);
+        draw_vertical_line(divider_x, 0, screen.rows - 1, V);
+
+        set_console_position(divider_x, (int)(screen.rows / 2));
+        putchar(LEFT_T);
+
+        set_console_position(divider_x, screen.rows - 3);
+        putchar(RIGHT_T);
+
+        // 코드 영역 표시
+        set_console_position(2, 3);
+        printf("Code Editor (ESC to exit)");
+
+        print_stack(divider_x, s->top + 1);
+        print_stack_log(divider_x, s);
+
+        print_register(divider_x, reg);
+
+        for (int j = 0; j <= line && j < 50; j++) {
+            set_console_position(2, 5 + j);
+
+            if (i == j) {
+                set_text_color(YELLOW);
+            }
+
+            printf("%s", file->code[j]);
+
+            set_text_color(WHITE);
+        }
+
+
+
+        // 첫 번째 토큰
+        token = strtok_s(temp, " \t", &next_token);
+
+        // 모든 토큰 추출
+        while (token != NULL && code_i < 3) {
+            asm_parts[code_i] = token;
+            code_i++;
+
+            token = strtok_s(NULL, " \t", &next_token);
+        }
+
+        // 빈 줄 무시
+        if (asm_parts[0] != NULL) {
+            divide_code(asm_parts, file, s, reg, err);
+
+            // 에러 발생 시 실행 중단
+            if (err[0] != '\0') {
+                printf("Error at line %d: %s\n", i + 1, err);
+                break;  // 또는 return으로 완전 종료
+            }
+        }
+
+        Sleep(2000);
+
+        i++;
+    }
 }
 
 
@@ -151,14 +347,11 @@ void editor_setup(struct File* file) {
     struct Register reg;
 
     init_stack(&s);
-    push(&s, 3284);
-    push(&s, 1021);
-    push(&s, 23494);
 
-    reg.ax = 1;
-    reg.bx = 2;
-    reg.cx = 3;
-    reg.dx = 4;
+    reg.ax = 0;
+    reg.bx = 0;
+    reg.cx = 0;
+    reg.dx = 0;
 
     // 모든 줄을 복사 (빈 줄 포함)
     for (int i = 0; i < 50; i++) {
@@ -177,6 +370,7 @@ void editor_setup(struct File* file) {
     int pos = 0;
 
     char cmd[20];
+    char err[100] = { 0, };
 
     while (1) {
         system("cls");
@@ -205,6 +399,8 @@ void editor_setup(struct File* file) {
 
         print_stack(divider_x, s.top + 1);
         print_stack_log(divider_x, &s);
+
+        print_error(err);
 
         // 상태 표시
         //set_console_position(2, screen.rows - 2);
@@ -245,7 +441,7 @@ void editor_setup(struct File* file) {
             }
             
             if (strchr(cmd, 'x')) {
-                execute(file, &s);
+                execute(file, &s, &reg, err);
             }
         }
 
@@ -271,19 +467,19 @@ void editor_setup(struct File* file) {
         }
         
         
-        else if (ch == 224 || ch == 0) {  // 방향키
-            ch = _getch();
-            if (ch == 75 && pos > 0) pos--;  // 왼쪽
-            else if (ch == 77 && pos < strlen(code[line])) pos++;  // 오른쪽
-            else if (ch == 72 && line > 0) {  // 위
-                line--;
-                if (pos > strlen(code[line])) pos = strlen(code[line]);
-            }
-            else if (ch == 80 && line < 49) {  // 아래
-                line++;
-                if (pos > strlen(code[line])) pos = strlen(code[line]);
-            }
-        }
+        //else if (ch == 224 || ch == 0) {  // 방향키
+        //    ch = _getch();
+        //    if (ch == 75 && pos > 0) pos--;  // 왼쪽
+        //    else if (ch == 77 && pos < strlen(code[line])) pos++;  // 오른쪽
+        //    else if (ch == 72 && line > 0) {  // 위
+        //        line--;
+        //        if (pos > strlen(code[line])) pos = strlen(code[line]);
+        //    }
+        //    else if (ch == 80 && line < 49) {  // 아래
+        //        line++;
+        //        if (pos > strlen(code[line])) pos = strlen(code[line]);
+        //    }
+        //}
         
         
         else if (ch >= 32 && ch <= 126) {  // 출력 가능한 문자

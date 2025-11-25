@@ -176,25 +176,38 @@ void divide_code(char* asm[3], struct File* file, struct Stack* s, struct Regist
         }
 
         int sec_oprand = 0;
-        
+
         // 두 번째 오퍼랜드 레지스터 확인
-        if (strcmp(asm[2], "ax") != NULL) sec_oprand = reg->ax;
-        else if (strcmp(asm[2], "bx") != NULL) sec_oprand = reg->bx;
-        else if (strcmp(asm[2], "cx") != NULL) sec_oprand = reg->cx;
-        else if (strcmp(asm[2], "dx") != NULL) sec_oprand = reg->dx;
+        if (strcmp(asm[2], "ax") == 0) sec_oprand = reg->ax;
+        else if (strcmp(asm[2], "bx") == 0) sec_oprand = reg->bx;
+        else if (strcmp(asm[2], "cx") == 0) sec_oprand = reg->cx;
+        else if (strcmp(asm[2], "dx") == 0) sec_oprand = reg->dx;
         else {
             sec_oprand = atoi(asm[2]);
         }
 
-
-        if (strcmp(asm[1], "ax") == 0) reg->ax += sec_oprand;
-        else if (strcmp(asm[1], "bx") == 0) reg->bx += sec_oprand;
-        else if (strcmp(asm[1], "cx") == 0) reg->cx += sec_oprand;
-        else if (strcmp(asm[1], "dx") == 0) reg->dx += sec_oprand;
+        if (strcmp(asm[1], "ax") == 0) {
+            //reg->ax += atoi(asm[2]);
+            reg->ax += sec_oprand;
+        }
+        else if (strcmp(asm[1], "bx") == 0) {
+            //reg->bx += atoi(asm[2]);
+            reg->bx += sec_oprand;
+        }
+        else if (strcmp(asm[1], "cx") == 0) {
+            //reg->cx += atoi(asm[2]);
+            reg->cx += sec_oprand;
+        }
+        else if (strcmp(asm[1], "dx") == 0) {
+            //reg->dx += atoi(asm[2]);
+            reg->dx += sec_oprand;
+        }
         else {
+            sec_oprand = atoi(asm[2]);
             strcpy_s(err, err_size, "Invalid register for ADD");
             return;
         }
+
         break;
 
     case SUB:
@@ -203,14 +216,36 @@ void divide_code(char* asm[3], struct File* file, struct Stack* s, struct Regist
             return;
         }
 
-        if (strcmp(asm[1], "ax") == 0) reg->ax -= atoi(asm[2]);
-        else if (strcmp(asm[1], "bx") == 0) reg->bx -= atoi(asm[2]);
-        else if (strcmp(asm[1], "cx") == 0) reg->cx -= atoi(asm[2]);
-        else if (strcmp(asm[1], "dx") == 0) reg->dx -= atoi(asm[2]);
+        int sec_oprand_sub = 0;
+
+        // 두 번째 오퍼랜드 레지스터 확인
+        if (strcmp(asm[2], "ax") == 0) sec_oprand_sub = reg->ax;
+        else if (strcmp(asm[2], "bx") == 0) sec_oprand_sub = reg->bx;
+        else if (strcmp(asm[2], "cx") == 0) sec_oprand_sub = reg->cx;
+        else if (strcmp(asm[2], "dx") == 0) sec_oprand_sub = reg->dx;
         else {
+            sec_oprand_sub = atoi(asm[2]);
+        }
+
+        if (strcmp(asm[1], "ax") == 0) {
+            reg->ax -= sec_oprand_sub;
+        }
+        else if (strcmp(asm[1], "bx") == 0) {
+            reg->bx -= sec_oprand_sub;
+        }
+        else if (strcmp(asm[1], "cx") == 0) {
+            reg->cx -= sec_oprand_sub;
+        }
+        else if (strcmp(asm[1], "dx") == 0) {
+            reg->dx -= sec_oprand_sub;
+        }
+        else {
+            sec_oprand_sub
+                = atoi(asm[2]);
             strcpy_s(err, err_size, "Invalid register for SUB");
             return;
         }
+
         break;
 
     case MOV:
@@ -219,7 +254,14 @@ void divide_code(char* asm[3], struct File* file, struct Stack* s, struct Regist
             return;
         }
 
-        int value = atoi(asm[2]);
+        int value = 0;
+        if (strcmp(asm[2], "ax") == 0) value = reg->ax;
+        else if (strcmp(asm[2], "bx") == 0) value = reg->bx;
+        else if (strcmp(asm[2], "cx") == 0) value = reg->cx;
+        else if (strcmp(asm[2], "dx") == 0) value = reg->dx;
+        else {
+            value = atoi(asm[2]);
+        }
 
         if (strcmp(asm[1], "ax") == 0) reg->ax = value;
         else if (strcmp(asm[1], "bx") == 0) reg->bx = value;
@@ -465,22 +507,6 @@ void editor_setup(struct File* file) {
                 pos = 0;
             }
         }
-        
-        
-        //else if (ch == 224 || ch == 0) {  // 방향키
-        //    ch = _getch();
-        //    if (ch == 75 && pos > 0) pos--;  // 왼쪽
-        //    else if (ch == 77 && pos < strlen(code[line])) pos++;  // 오른쪽
-        //    else if (ch == 72 && line > 0) {  // 위
-        //        line--;
-        //        if (pos > strlen(code[line])) pos = strlen(code[line]);
-        //    }
-        //    else if (ch == 80 && line < 49) {  // 아래
-        //        line++;
-        //        if (pos > strlen(code[line])) pos = strlen(code[line]);
-        //    }
-        //}
-        
         
         else if (ch >= 32 && ch <= 126) {  // 출력 가능한 문자
             int len = strlen(code[line]);
